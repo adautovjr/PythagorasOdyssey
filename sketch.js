@@ -30,7 +30,7 @@ xAviao = 238, yAviao = 130;
 
 /*Essa variável vai determinar quando algumas funções, textos, imagens
 ou que for devem aparecer no momento que estamos desenvolvendo o jogo*/
-var debug = true;
+var debug = false;
 
 function funcBtnMenu(){
   telaAtual = TELAS.MENU;
@@ -182,7 +182,9 @@ function keyReleased() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  setTimeout(() => {
-    alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")
-  }, 100);
+  if (!debug){
+    setTimeout(() => {
+      alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")
+    }, 100);
+  }
 });
