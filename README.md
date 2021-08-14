@@ -1,4 +1,5 @@
 # PythagorasOdyssey
 HTML5 game
 
-Link para vídeo explicativo: https://youtube.com
+Esse projeto foi baixado e desenvolvido num servidor local.
+Link para vídeo explicativo: https://youtu.be/zHKvy5huvHU
