@@ -1,11 +1,10 @@
 const Menu = {
   draw(){
-    image(imgFundoJogo, 0, 0, largCanvas, altCanvas);
-    imagem(imgLogo, largCanvas / 2 - imgLogo.width * 0.35 / 2, 25, 0.35);
+    image(imgFundoMenu, 0, 0, largCanvas, altCanvas);
 
     desenhaBotao(xBtnMenu, yBtnMenu, 'Iniciar Jogo', funcBtnIniciarJogo, 1);
     desenhaBotao(xBtnMenu, yBtnMenu + 50, 'Como Jogar', funcBtnComoJogar, 2);
-    desenhaBotao(xBtnMenu, yBtnMenu + 100, 'Créditos', funcBtnIniciarJogo, 3);
+    desenhaBotao(xBtnMenu, yBtnMenu + 100, 'Créditos', funcBtnCreditos, 3);
 
     // imagem(imgAviao, xAviao, yAviao, 0.25);
   },

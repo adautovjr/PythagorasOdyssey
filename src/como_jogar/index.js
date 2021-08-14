@@ -1,6 +1,6 @@
 const ComoJogar = {
   draw(){
-    background(imgFundoJogo);
+    image(imgComoJogar, 0, 0, largCanvas, altCanvas);
     desenhaBotao(xBtnMenu, yBtnMenu + 150, 'Voltar', funcBtnMenu, 1);
   }
 }

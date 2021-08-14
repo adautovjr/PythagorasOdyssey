@@ -10,17 +10,19 @@ const MENU_OPTIONS = {
   LAST: TELAS.CREDITOS
 }
 
+var canvas;
+
 //Declaração de variáveis globais gerais
-var telaAtual = TELAS.JOGO;
+var telaAtual = TELAS.MENU;
 
 //Declaração de variáveis globais de imagens
-var vdFundoInicial, imgFundoJogo, imgAviao, imgLogo, imgCreditos;
-var largCanvas = 1000, altCanvas = largCanvas * 9 / 16;
+var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar;
+const largCanvas = 1920, altCanvas = largCanvas * 9 / 16;
 
 // Definições dos botões do menu principal
 var largBtnMenu = 300, altBtnMenu = 40,
   xBtnMenu = largCanvas / 2 - largBtnMenu / 2,
-  yBtnMenu = altCanvas / 2 + 40,
+  yBtnMenu = altCanvas / 2 + 190,
   focoBtnMenu = 0;
 
 //Variáveis do avião
@@ -29,30 +31,6 @@ xAviao = 238, yAviao = 130;
 /*Essa variável vai determinar quando algumas funções, textos, imagens
 ou que for devem aparecer no momento que estamos desenvolvendo o jogo*/
 var debug = true;
-
-function desenhaAviao() {
-  imagem(imgAviao, xAviao, yAviao, 0.25);
-
-  //Verificação de movimentação do avião
-  if (keyIsPressed) {
-    if (keyCode == UP_ARROW) {
-      //Tecla para cima
-      yAviao -= 1;
-    }
-    if (keyCode == DOWN_ARROW) {
-      //Tecla para baixo
-      yAviao += 1;
-    }
-    if (keyCode == LEFT_ARROW) {
-      //Tecla para esquerda
-      xAviao -= 1;
-    }
-    if (keyCode == RIGHT_ARROW) {
-      //Tecla para direita
-      xAviao += 1;
-    }
-  }
-}
 
 function funcBtnMenu(){
   telaAtual = TELAS.MENU;
@@ -72,10 +50,10 @@ function funcBtnCreditos() {
 
 function desenhaBotao(x, y, texto, func, foco) {
   push()
-  stroke('#c83737')
+  stroke('#3d0055')
   strokeWeight(3)
   if (focoBtnMenu == foco) {
-    fill(61, 112, 201, 100); //Pinta o foco do botão
+    fill(61, 112, 201, 60); //Pinta o foco do botão
     yAviao = y - 20;
   } else {
     fill(255, 255, 255, 100);
@@ -98,6 +76,7 @@ function desenhaBotao(x, y, texto, func, foco) {
   push()
   textAlign(CENTER);
   textSize(32);
+  fill(61, 0 , 85);
   text(texto, largCanvas / 2, y + 30);
   pop()
 }
@@ -119,12 +98,10 @@ function imagem(img, x, y, escala) {
 }
 
 function preload() {
-  //   vdFundoInicial = createVideo(['imagens/bgtelaAtualInicial.mp4']);
-  //   vdFundoInicial.hide();
+  imgFundoMenu = loadImage('assets/background-menu.png');
   imgFundoJogo = loadImage('assets/background.png');
-  //   imgAviao = loadImage('imagens/Fly (1).png');
-  imgLogo = loadImage('assets/logoJogo.png');
-  //   imgCreditos = loadImage('imagens/telaAtualCreditos.svg');
+  imgComoJogar = loadImage('assets/comojogar.png');
+  imgCreditos = loadImage('assets/creditos.png');
 }
 
 function setup() {
@@ -203,3 +180,9 @@ function keyReleased() {
       break;
   }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  setTimeout(() => {
+    alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")
+  }, 100);
+});

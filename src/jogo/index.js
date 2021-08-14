@@ -1,6 +1,37 @@
 const matrixSize = 3;
 
+const initialValues = function(){
+  switch (matrixSize) {
+    case 3:
+      return {
+        x: 770,
+        y: 350
+      }
+    case 4:
+      return {
+        x: 700,
+        y: 290
+      }
+    case 5:
+      return {
+        x: 650,
+        y: 220
+      }
+    case 6:
+      return {
+        x: 600,
+        y: 150
+      }
+    default:
+      return {
+        x: 150,
+        y: 150
+      }
+  }
+}
+
 let shownDebug = false;
+let initialTablePosX = initialValues().x, initialTablePosY = initialValues().y;
 let x = 0, y = 0, w = 100, h = 120;
 
 let gameObjects = [
@@ -44,9 +75,11 @@ function updatePlayerPosition() {
   setGameObjectPosition(currentPosition.x, currentPosition.y, "player");
 }
 
-updatePlayerPosition();
+if (matrixSize > 0) {
+  updatePlayerPosition();
+}
 
-function drawMatrix(initialPosX = 315, initialPosY = 100, padding = 10) {
+function drawMatrix(initialPosX = initialTablePosX, initialPosY = initialTablePosY, padding = 10) {
   for (let i = 0; i < matrixSize; i++) {
     for (let j = 0; j < matrixSize; j++) {
       x = ((w + padding) * (i)) + initialPosX;
@@ -84,7 +117,6 @@ function showDebug() {
 
 function move(direction) {
   const previousPosition = currentPosition;
-  console.log("previousPosition", previousPosition)
   switch (direction) {
     case "up":
       for (let i = 0; i <= previousPosition.y + 1; i++) {
@@ -115,8 +147,6 @@ function move(direction) {
     case "right":
       for (let i = 0; i <= previousPosition.x + 1; i++) {
         // Para todas as casas na direção oposta que jogador estar, estas devem se mover na direção do jogador
-        console.log("i", i);
-        console.log("previousPosition", previousPosition);
         if (previousPosition.x - i == 0) {
           // Se estiver na borda do tabuleiro
           if (currentState[previousPosition.x - i] !== undefined) {
@@ -137,19 +167,19 @@ function move(direction) {
         if (previousPosition.x + i == matrixSize - 1) {
           // Se estiver na borda do tabuleiro
           if (currentState[previousPosition.x + i] !== undefined) {
-            setGameObjectPosition(previousPosition.x + i, previousPosition.y, spawn_random());
+          setGameObjectPosition(previousPosition.x + i, previousPosition.y, spawn_random());
           }
         } else {
           // Se não move o anterior pra casa atual
           if (currentState[previousPosition.x + i] !== undefined) {
-            setGameObjectPosition(previousPosition.x + i, previousPosition.y, currentState[previousPosition.x - (i + 1)][previousPosition.y]);
+            setGameObjectPosition(previousPosition.x + i, previousPosition.y, currentState[previousPosition.x + (i + 1)][previousPosition.y]);
           }
         }
       }
       currentPosition.x -= 1;
       break;
     default:
-      console.log(`Weird direction ${direction}`);
+      console.error(`Weird direction ${direction}`);
       break;
   }
 }
@@ -181,6 +211,9 @@ const Jogo = {
         if (currentPosition.x < matrixSize - 1){
           move("right");
         }
+        break;
+      case ESCAPE:
+        telaAtual = TELAS.MENU;
         break;
       default:
         console.log(keyCode);
