@@ -7,7 +7,8 @@ let gameObjects = [
   {
     item: "Enemy",
     weight: 15
-  }, {
+  },
+  {
     item: "item",
     weight: 5
   },
@@ -25,28 +26,33 @@ var currentState = [];
 for (var i = 0; i < matrixSize; i++) {
   currentState[i] = [];
   for (var j = 0; j < matrixSize; j++) {
-    currentState[i][j] = weighted_random(gameObjects);
+    currentState[i][j] = spawn_random();
   }
 }
 
 let currentPosition = {
-  x: Math.floor(matrixSize / 2) + (matrixSize % 2 == 0 ? 0 : 1),
-  y: Math.floor(matrixSize / 2) + (matrixSize % 2 == 0 ? 0 : 1)
+  x: Math.floor(matrixSize / 2) + (matrixSize % 2 == 0 ? -1 : 0),
+  y: Math.floor(matrixSize / 2) + (matrixSize % 2 == 0 ? -1 : 0)
 }
 
-function updatePlayerPosition(){
-  currentState[currentPosition.x - 1][currentPosition.y - 1] = "player";
+function setGameObjectPosition(x, y, gameObject) {
+  console.log(`Setting ${gameObject} in ${x},${y}`);
+  currentState[x][y] = gameObject;
+}
+
+function updatePlayerPosition() {
+  setGameObjectPosition(currentPosition.x, currentPosition.y, "player");
 }
 
 updatePlayerPosition();
 
 function drawMatrix(initialPosX = 315, initialPosY = 100, padding = 10) {
-  for (let i = 1; i <= matrixSize; i++) {
-    for (let j = 1; j <= matrixSize; j++) {
-      x = ((w + padding) * (i - 1)) + initialPosX;
-      y = ((h + padding) * ((j - 1))) + initialPosY;
+  for (let i = 0; i < matrixSize; i++) {
+    for (let j = 0; j < matrixSize; j++) {
+      x = ((w + padding) * (i)) + initialPosX;
+      y = ((h + padding) * ((j))) + initialPosY;
       rect(x, y, w, h, 15);
-      text(currentState[i-1][j-1], x + 15, y + 15);
+      text(currentState[i][j], x + 6, y + 70);
     }
   }
   if (!shownDebug) {
@@ -55,13 +61,12 @@ function drawMatrix(initialPosX = 315, initialPosY = 100, padding = 10) {
   shownDebug = true;
 }
 
-function weighted_random(options) {
+function spawn_random() {
   var i;
-
   var weights = [];
 
-  for (i = 0; i < options.length; i++)
-    weights[i] = options[i].weight + (weights[i - 1] || 0);
+  for (i = 0; i < gameObjects.length; i++)
+    weights[i] = gameObjects[i].weight + (weights[i - 1] || 0);
 
   var random = Math.random() * weights[weights.length - 1];
 
@@ -69,12 +74,84 @@ function weighted_random(options) {
     if (weights[i] > random)
       break;
 
-  return options[i].item;
+  return gameObjects[i].item;
 }
 
 function showDebug() {
   console.table(currentState);
   console.log(currentPosition);
+}
+
+function move(direction) {
+  const previousPosition = currentPosition;
+  console.log("previousPosition", previousPosition)
+  switch (direction) {
+    case "up":
+      for (let i = 0; i <= previousPosition.y + 1; i++) {
+        // Para todas as casas na direção oposta que jogador estar, estas devem se mover na direção do jogador
+        if (previousPosition.y + i == matrixSize - 1) {
+          // Se estiver na borda do tabuleiro
+          setGameObjectPosition(previousPosition.x, previousPosition.y + i, spawn_random());
+        } else {
+          // Se não move o anterior pra casa atual
+          setGameObjectPosition(previousPosition.x, previousPosition.y + i, currentState[previousPosition.x][previousPosition.y + (i + 1)]);
+        }
+      }
+      currentPosition.y -= 1;
+      break;
+    case "down":
+      for (let i = 0; i <= previousPosition.y + 1; i++) {
+        // Para todas as casas na direção oposta que jogador estar, estas devem se mover na direção do jogador
+        if (previousPosition.y - i == 0) {
+          // Se estiver na borda do tabuleiro
+          setGameObjectPosition(previousPosition.x, previousPosition.y - i, spawn_random());
+        } else {
+          // Se não move o anterior pra casa atual
+          setGameObjectPosition(previousPosition.x, previousPosition.y - i, currentState[previousPosition.x][previousPosition.y - (i + 1)]);
+        }
+      }
+      currentPosition.y += 1;
+      break;
+    case "right":
+      for (let i = 0; i <= previousPosition.x + 1; i++) {
+        // Para todas as casas na direção oposta que jogador estar, estas devem se mover na direção do jogador
+        console.log("i", i);
+        console.log("previousPosition", previousPosition);
+        if (previousPosition.x - i == 0) {
+          // Se estiver na borda do tabuleiro
+          if (currentState[previousPosition.x - i] !== undefined) {
+            setGameObjectPosition(previousPosition.x - i, previousPosition.y, spawn_random());
+          }
+        } else {
+          // Se não move o anterior pra casa atual
+          if (currentState[previousPosition.x - i] !== undefined) {
+            setGameObjectPosition(previousPosition.x - i, previousPosition.y, currentState[previousPosition.x - (i + 1)][previousPosition.y]);
+          }
+        }
+      }
+      currentPosition.x += 1;
+      break;
+    case "left":
+      for (let i = 0; i <= previousPosition.x + 1; i++) {
+        // Para todas as casas na direção oposta que jogador estar, estas devem se mover na direção do jogador
+        if (previousPosition.x + i == matrixSize - 1) {
+          // Se estiver na borda do tabuleiro
+          if (currentState[previousPosition.x + i] !== undefined) {
+            setGameObjectPosition(previousPosition.x + i, previousPosition.y, spawn_random());
+          }
+        } else {
+          // Se não move o anterior pra casa atual
+          if (currentState[previousPosition.x + i] !== undefined) {
+            setGameObjectPosition(previousPosition.x + i, previousPosition.y, currentState[previousPosition.x - (i + 1)][previousPosition.y]);
+          }
+        }
+      }
+      currentPosition.x -= 1;
+      break;
+    default:
+      console.log(`Weird direction ${direction}`);
+      break;
+  }
 }
 
 const Jogo = {
@@ -86,16 +163,24 @@ const Jogo = {
   handleInput() {
     switch (keyCode) {
       case UP_ARROW:
-        currentPosition.y -= 1;
+        if (currentPosition.y > 0){
+          move("up");
+        }
         break;
       case DOWN_ARROW:
-        currentPosition.y += 1;
+        if (currentPosition.y < matrixSize - 1){
+          move("down");
+        }
         break;
       case LEFT_ARROW:
-        currentPosition.x -= 1;
+        if (currentPosition.x > 0){
+          move("left");
+        }
         break;
       case RIGHT_ARROW:
-        currentPosition.x += 1;
+        if (currentPosition.x < matrixSize - 1){
+          move("right");
+        }
         break;
       default:
         console.log(keyCode);
