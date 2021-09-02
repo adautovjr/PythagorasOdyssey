@@ -13,10 +13,10 @@ const MENU_OPTIONS = {
 var canvas;
 
 //Declaração de variáveis globais gerais
-var telaAtual = TELAS.MENU;
+var telaAtual = TELAS.JOGO;
 
 //Declaração de variáveis globais de imagens
-var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar;
+var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar, imgPlayer, imgHollow;
 const largCanvas = 1920, altCanvas = largCanvas * 9 / 16;
 
 // Definições dos botões do menu principal
@@ -30,7 +30,7 @@ xAviao = 238, yAviao = 130;
 
 /*Essa variável vai determinar quando algumas funções, textos, imagens
 ou que for devem aparecer no momento que estamos desenvolvendo o jogo*/
-var debug = false;
+var debug = true;
 
 function funcBtnMenu(){
   telaAtual = TELAS.MENU;
@@ -84,7 +84,7 @@ function desenhaBotao(x, y, texto, func, foco) {
 function mostraCoordenadas() {
   push()
   textSize(25)
-  text('(mouseX,mouseY) = (' + mouseX.toFixed(1) + ',' + mouseY.toFixed(1) + ')', 5, 25);
+  text('(mouseX,mouseY) = (' + mouseX.toFixed(1) + ',' + mouseY.toFixed(1) + ')', 5, 130);
   pop()
 }
 
@@ -102,6 +102,8 @@ function preload() {
   imgFundoJogo = loadImage('assets/background.png');
   imgComoJogar = loadImage('assets/comojogar.png');
   imgCreditos = loadImage('assets/creditos.png');
+  imgPlayer = loadImage('assets/player.png');
+  imgHollow = loadImage('assets/hollowzin.png');
 }
 
 function setup() {
@@ -134,7 +136,7 @@ function draw() {
   if (debug) {
     mostraCoordenadas();
     textSize(32);
-    text(focoBtnMenu, 9, 55);
+    text(focoBtnMenu, 9, 170);
   }
 
 }
