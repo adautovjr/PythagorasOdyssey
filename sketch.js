@@ -2,7 +2,8 @@ const TELAS = {
   MENU: 0,
   JOGO: 1,
   COMOJOGAR: 2,
-  CREDITOS: 3
+  CREDITOS: 3,
+  TELADEMORTE: 666
 }
 
 const MENU_OPTIONS = {
@@ -16,7 +17,8 @@ var canvas;
 var telaAtual = TELAS.JOGO;
 
 //Declaração de variáveis globais de imagens
-var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar, imgPlayer, imgHollow;
+var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar, imgPlayer, imgHollow, 
+    cardPlayer, cardHollow, cardItem, cardChest;
 const largCanvas = 1920, altCanvas = largCanvas * 9 / 16;
 
 // Definições dos botões do menu principal
@@ -104,6 +106,12 @@ function preload() {
   imgCreditos = loadImage('assets/creditos.png');
   imgPlayer = loadImage('assets/player.png');
   imgHollow = loadImage('assets/hollowzin.png');
+  cardPlayer = loadImage('assets/card-player.png');
+  cardHollow = loadImage('assets/card-hollows.png');
+  cardItem = loadImage('assets/card-itens.png');
+  cardChest = loadImage('assets/card-bau.png');
+  heartHealthy = loadImage('assets/coracao-player.png');
+  heartHollow = loadImage('assets/coracao-hollow.png');
 }
 
 function setup() {
@@ -127,6 +135,9 @@ function draw() {
       break;
     case 3:
       Creditos.draw();
+      break;
+    case 666:
+      TelaDeMorte.draw();
       break;
     default:
       Menu.draw();
@@ -156,6 +167,9 @@ function keyPressed() {
     case TELAS.CREDITOS:
       // Do something
       break;
+    case TELAS.TELADEMORTE:
+      reloadGame();
+      break;
     default:
       Menu.handleInput();
       break;
@@ -176,6 +190,9 @@ function keyReleased() {
       break;
     case TELAS.CREDITOS:
       // Do something
+      break;
+    case TELAS.TELADEMORTE:
+      reloadGame();
       break;
     default:
       Menu.handleInput();
