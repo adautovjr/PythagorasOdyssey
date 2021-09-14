@@ -157,10 +157,9 @@ function preload() {
 
 function setup() {
   createCanvas(largCanvas, altCanvas);
-  setTimeout(function(){
-    document.getElementById("defaultCanvas0").style.width  = `${largCanvas}px`;
-    document.getElementById("defaultCanvas0").style.height = `${largCanvas * 9 / 16}px`;
-  }, 200);
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'))
+  }, 100);
 }
 
 function draw() {
