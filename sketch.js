@@ -15,10 +15,12 @@ var canvas;
 
 //Declaração de variáveis globais gerais
 var telaAtual = TELAS.JOGO;
+var justClicked = false;
+var isHoveringButton = false;
 
 //Declaração de variáveis globais de imagens
 var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar, imgPlayer, imgHollow, 
-    cardPlayer, cardHollow, cardItem, cardChest;
+    cardPlayer, cardHollow, cardItem, cardChest, imgFormas = {};
 const largCanvas = 1920, altCanvas = largCanvas * 9 / 16;
 
 // Definições dos botões do menu principal
@@ -50,36 +52,46 @@ function funcBtnCreditos() {
   telaAtual = TELAS.CREDITOS;
 }
 
-function desenhaBotao(x, y, texto, func, foco) {
+function desenhaBotao(x, y, texto, func, foco, fillColor = false) {
   push()
   stroke('#3d0055')
   strokeWeight(3)
   if (focoBtnMenu == foco) {
-    fill(61, 112, 201, 60); //Pinta o foco do botão
-    yAviao = y - 20;
+    fill(fillColor ? fillColor : '#ffffff'); //Pinta o foco do botão
   } else {
-    fill(255, 255, 255, 100);
+    fill(fillColor ? fillColor : "#ffffff");
   }
-  if (mouseX >= x &&
+  if (
+    mouseX >= x &&
     mouseX <= x + largBtnMenu &&
     mouseY >= y &&
-    mouseY <= y + altBtnMenu) {
+    mouseY <= y + altBtnMenu
+  ) {
+    isHoveringButton = true;
+    cursor("pointer");
     focoBtnMenu = foco;
-    if (mouseIsPressed && mouseButton == LEFT) {
+    if (!justClicked && mouseIsPressed && mouseButton == LEFT) {
+      justClicked = true;
       //Se o mouse estiver pressionado
       func();
+      setTimeout(function(){
+        justClicked = false;
+      }, 3000);
     }
   } else {
-
+    if (!isHoveringButton) {
+      cursor(CROSS);
+    }
   }
+  rectMode(CORNER)
   rect(x, y, largBtnMenu, altBtnMenu);
   pop()
 
   push()
-  textAlign(CENTER);
+  textAlign(CENTER, CENTER);
   textSize(32);
   fill(61, 0 , 85);
-  text(texto, largCanvas / 2, y + 30);
+  text(texto, x + (largBtnMenu / 2), y + (altBtnMenu / 2) + 2);
   pop()
 }
 
@@ -99,6 +111,22 @@ function imagem(img, x, y, escala) {
   image(img, x, y, larg * escala, alt * escala);
 }
 
+const FORMAS = [
+  "cilindro",
+  "circulo",
+  "cone",
+  "cubo",
+  "elipse",
+  "hexagono",
+  "losango",
+  "paralelepipedo",
+  "pentagono",
+  "prisma",
+  "quadrado",
+  "retangulo",
+  "triangulo"
+];
+
 function preload() {
   imgFundoMenu = loadImage('assets/background-menu.png');
   imgFundoJogo = loadImage('assets/background.png');
@@ -112,6 +140,10 @@ function preload() {
   cardChest = loadImage('assets/card-bau.png');
   heartHealthy = loadImage('assets/coracao-player.png');
   heartHollow = loadImage('assets/coracao-hollow.png');
+  for (let i = 0; i < FORMAS.length; i++) {
+    const forma = FORMAS[i];
+    imgFormas[forma] = loadImage(`assets/challenge/${forma}.png`)
+  }
 }
 
 function setup() {
@@ -124,19 +156,19 @@ function draw() {
 
   switch (telaAtual) {
     //telaAtual do Menu
-    case 0:
+    case TELAS.MENU:
       Menu.draw();
       break;
-    case 1:
+    case TELAS.JOGO:
       Jogo.draw();
       break;
-    case 2:
+    case TELAS.COMOJOGAR:
       ComoJogar.draw();
       break;
-    case 3:
+    case TELAS.CREDITOS:
       Creditos.draw();
       break;
-    case 666:
+    case TELAS.TELADEMORTE:
       TelaDeMorte.draw();
       break;
     default:
@@ -150,6 +182,7 @@ function draw() {
     text(focoBtnMenu, 9, 170);
   }
 
+  isHoveringButton = false;
 }
 
 function keyPressed() {
@@ -196,6 +229,29 @@ function keyReleased() {
       break;
     default:
       Menu.handleInput();
+      break;
+  }
+}
+
+function mousePressed() {
+  switch (telaAtual) {
+    //telaAtual do Menu
+    case TELAS.MENU:
+      // Do something
+      break;
+    case TELAS.JOGO:
+      Jogo.handleMouse();
+      break;
+    case TELAS.COMOJOGAR:
+      // Do something
+      break;
+    case TELAS.CREDITOS:
+      // Do something
+      break;
+    case TELAS.TELADEMORTE:
+      // reloadGame();
+      break;
+    default:
       break;
   }
 }
