@@ -157,8 +157,10 @@ function preload() {
 
 function setup() {
   createCanvas(largCanvas, altCanvas);
-  document.getElementById("defaultCanvas0").style.width  = `${largCanvas}px`;
-  document.getElementById("defaultCanvas0").style.height = `${largCanvas * 9 / 16}px`;
+  setTimeout(function(){
+    document.getElementById("defaultCanvas0").style.width  = `${largCanvas}px`;
+    document.getElementById("defaultCanvas0").style.height = `${largCanvas * 9 / 16}px`;
+  }, 200);
 }
 
 function draw() {
@@ -293,8 +295,6 @@ function windowResized() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("defaultCanvas0").style.width  = `${windowWidth}px`;
-  document.getElementById("defaultCanvas0").style.height = `${windowWidth * 9 / 16}px`;
   if (!debug && getCookie(FULLSCREEN_KEY) !== 'true'){
     setTimeout(() => {
       createCookie(FULLSCREEN_KEY, true, 1);
