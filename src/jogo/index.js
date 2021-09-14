@@ -91,7 +91,7 @@ let initialTablePosX = initialValues().x, initialTablePosY = initialValues().y, 
 let x = 0, y = 0, w = initialValues().cardWidth, h = initialValues().cardHeight;
 let imgAdjustment = initialValues().gameObject.imgAdjustment;
 let cardAdjustment = initialValues().gameObject.cardAdjustment; 1
-let showChallenge = false, showAnswer = false, usingTheorem = false;
+let showChallenge = false, showAnswer = false, usingTheorem = false, canAnswerChallenge = false;
 let theoremPoints = [], selectedGameObjects = {}, lastReward = {};
 
 const DIRECTIONS = {
@@ -267,29 +267,27 @@ function drawCard(gameObject, x, y) {
   fill('#fff');
   switch (gameObject.type) {
     case GAME_OBJECT_TYPES.PLAYER:
-      imagem(cardPlayer, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
-      imagem(imgPlayer, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
-      imagem(heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.cardPlayer, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.imgPlayer, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
+      imagem(assets.heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
       break;
     case GAME_OBJECT_TYPES.ENEMY:
-      imagem(cardHollow, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
-      imagem(imgHollow, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
-      imagem(heartHollow, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.cardHollow, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.imgHollow, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
+      imagem(assets.heartHollow, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
       break;
     case GAME_OBJECT_TYPES.HEAL:
     case GAME_OBJECT_TYPES.POTION:
-      // imagem(imgHollow, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
-      imagem(cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.type, x + 70, y + 90)
-      imagem(heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
       break;
     case GAME_OBJECT_TYPES.THEOREM:
     case GAME_OBJECT_TYPES.CHEST:
-      // imagem(imgHollow, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
-      imagem(cardChest, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.cardChest, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.type, x + 70, y + 90)
       break;
   }
@@ -514,9 +512,9 @@ function getUniqueAnswer(input) {
 }
 
 function getUniqueFormaGeometrica() {
-  let result = FORMAS[randomIntFromInterval(0, FORMAS.length - 1)];
+  let result = Object.keys(FORMAS)[randomIntFromInterval(0, Object.keys(FORMAS).length - 1)];
   while (answersArray.includes(result)) {
-    result = FORMAS[randomIntFromInterval(0, FORMAS.length - 1)];
+    result = Object.keys(FORMAS)[randomIntFromInterval(0, Object.keys(FORMAS).length - 1)];
   }
   answersArray.push(result);
   return result;
@@ -534,6 +532,7 @@ function getUniqueFloatAnswer() {
 function generateChallenge() {
   bespokeMinigame = randomIntFromInterval(1, 3);
   showChallenge = true;
+  canAnswerChallenge = false;
   answersArray = [];
   let result;
   switch (bespokeMinigame) {
@@ -596,34 +595,11 @@ function generateChallenge() {
   }
 }
 
-function handleReward(gameObject) {
-  lastReward = gameObject;
-  switch (gameObject.type) {
-    case GAME_OBJECT_TYPES.HEAL:
-      player.HP += gameObject.HP;
-      break;
-    case GAME_OBJECT_TYPES.POTION:
-      player.potions += gameObject.HP;
-      break;
-    case GAME_OBJECT_TYPES.THEOREM:
-      player.theorems += 1;
-      break;
-  }
-  player.score++;
-}
-
-function handleAnswer(id) {
-  showAnswer = true;
-  handleReward(answersArray[id] == minigameInfo.answer.right ? spawnReward() : {});
-
-  setTimeout(function(){
-    showChallenge = false;
-    showAnswer = false;
-  }, 2000)
-}
-
 function drawChallenge() {
   if (!showChallenge) return;
+  setTimeout(() => {
+    canAnswerChallenge = true;
+  }, 200);
   rectMode(CENTER)
   fill("#000000cc")
   rect(largCanvas / 2, altCanvas / 2, largCanvas, altCanvas)
@@ -696,7 +672,7 @@ function drawChallenge() {
         (altCanvas / 2) - 300
       )
 
-      imagem(imgFormas[minigameInfo.answer.right], (largCanvas / 2) - 105, (altCanvas / 2) - 230, 1)
+      imagem(assets.imgFormas[minigameInfo.answer.right], (largCanvas / 2) - 105, (altCanvas / 2) - 230, 1)
 
       textSize(24);
       desenhaBotao(
@@ -804,6 +780,35 @@ function drawChallenge() {
   }
 }
 
+function handleReward(gameObject) {
+  lastReward = gameObject;
+  switch (gameObject.type) {
+    case GAME_OBJECT_TYPES.HEAL:
+      player.HP += gameObject.HP;
+      break;
+    case GAME_OBJECT_TYPES.POTION:
+      player.potions += gameObject.HP;
+      break;
+    case GAME_OBJECT_TYPES.THEOREM:
+      player.theorems += 1;
+      break;
+  }
+  player.score++;
+}
+
+function handleAnswer(id) {
+  if (!canAnswerChallenge){
+    return;
+  }
+  showAnswer = true;
+  handleReward(answersArray[id] == minigameInfo.answer.right ? spawnReward() : {});
+
+  setTimeout(function(){
+    showChallenge = false;
+    showAnswer = false;
+  }, 2000)
+}
+
 function useTheorem() {
   if (!usingTheorem) {
     usingTheorem = true;
@@ -825,7 +830,9 @@ function drawHUD(){
       (altCanvas / 2),
       `Usar teorema (${player.theorems})`,
       () => useTheorem(),
-      5
+      5,
+      false,
+      "Desenhe um triângulo para trocar a posição de 3 cartas."
     );
   }
   if (player.potions > 0) {
@@ -869,6 +876,14 @@ function drawLines() {
     }
   }
   pop();
+}
+
+function drawTooltips() {
+  if (!showTooltip) {
+    return
+  }
+  rect(mouseX, mouseY, 100, 100)
+  text(showTooltip, mouseX, mouseY)
 }
 
 function getClickedCard(){
@@ -936,9 +951,9 @@ function handleMovementAttempt(direction){
       target = currentState[currentPosition.x + 1][currentPosition.y];
       break;
   }
+  player.score++;
   if (handleInteraction(target)) {
     move(direction);
-    player.score++;
     updatePlayerPosition();
     console.log(currentPosition);
   } else {
@@ -952,10 +967,11 @@ function handleMovementAttempt(direction){
 
 const Jogo = {
   draw() {
-    background(imgFundoJogo);
+    background(assets.imgFundoJogo);
     drawMatrix();
     drawHUD();
     drawChallenge();
+    drawTooltips();
   },
   handleMouse() {
     if (usingTheorem === true && theoremPoints.length < 3) {

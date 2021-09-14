@@ -5,7 +5,7 @@ const TelaDeMorte = {
   draw(){
     scoreText = `Sua pontuação: ${player.score}`;
     highscoreText = `Melhor pontuação: ${player.highscore}`;
-    image(imgFundoJogo, 0, 0, largCanvas, altCanvas);
+    image(assets.imgFundoJogo, 0, 0, largCanvas, altCanvas);
     push();
     textSize(40);
     text(DEATH_SENTENCE, (largCanvas / 2) - (textWidth(DEATH_SENTENCE) / 2), (altCanvas / 2) - 200);
