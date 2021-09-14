@@ -157,8 +157,8 @@ function preload() {
 
 function setup() {
   createCanvas(largCanvas, altCanvas);
-  $("#defaultCanvas0").css({ 'width': `${largCanvas}px` });
-  $("#defaultCanvas0").css({ 'height': `${altCanvas}px` });
+  document.getElementById("defaultCanvas0").style.width  = `${largCanvas}px`;
+  document.getElementById("defaultCanvas0").style.height = `${altCanvas}px`;
 }
 
 function draw() {
@@ -285,6 +285,11 @@ function getCookie(name) {
 
 function deleteCookie(name) {
   document.cookie = name+'=; path=/; Max-Age=-99999999;';
+}
+
+function windowResized() {
+  document.getElementById("defaultCanvas0").style.width  = `${windowWidth}px`;
+  document.getElementById("defaultCanvas0").style.height = `${windowHeight}px`;
 }
 
 document.addEventListener("DOMContentLoaded", function() {
