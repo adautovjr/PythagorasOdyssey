@@ -277,7 +277,7 @@ function deleteCookie(name) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  if (!debug && !getCookie(FULLSCREEN_KEY)){
+  if (!debug && getCookie(FULLSCREEN_KEY) !== 'true'){
     setTimeout(() => {
       createCookie(FULLSCREEN_KEY, true, 1);
       alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")

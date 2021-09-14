@@ -13,7 +13,7 @@ const TelaDeMorte = {
     text(scoreText, (largCanvas / 2) - (textWidth(scoreText) / 2), (altCanvas / 2) - 100);
     text(highscoreText, (largCanvas / 2) - (textWidth(highscoreText) / 2), (altCanvas / 2) - 0);
     pop();
-    desenhaBotao(xBtnMenu, yBtnMenu + 150, 'Reiniciar', reloadGame, 1);
+    desenhaBotao(xBtnMenu, yBtnMenu + 150, 'Reiniciar', () => reloadGame(), 1);
   }
 }
 
