@@ -14,7 +14,7 @@ const MENU_OPTIONS = {
 var canvas;
 
 //Declaração de variáveis globais gerais
-var telaAtual = TELAS.JOGO;
+var telaAtual = TELAS.MENU;
 var justClicked = false;
 var isHoveringButton = false;
 
@@ -34,7 +34,7 @@ xAviao = 238, yAviao = 130;
 
 /*Essa variável vai determinar quando algumas funções, textos, imagens
 ou que for devem aparecer no momento que estamos desenvolvendo o jogo*/
-var debug = true;
+var debug = false;
 
 function funcBtnMenu(){
   telaAtual = TELAS.MENU;
