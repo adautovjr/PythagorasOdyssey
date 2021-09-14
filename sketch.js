@@ -158,7 +158,7 @@ function preload() {
 function setup() {
   createCanvas(largCanvas, altCanvas);
   document.getElementById("defaultCanvas0").style.width  = `${largCanvas}px`;
-  document.getElementById("defaultCanvas0").style.height = `${altCanvas}px`;
+  document.getElementById("defaultCanvas0").style.height = `${largCanvas * 9 / 16}px`;
 }
 
 function draw() {
@@ -289,14 +289,16 @@ function deleteCookie(name) {
 
 function windowResized() {
   document.getElementById("defaultCanvas0").style.width  = `${windowWidth}px`;
-  document.getElementById("defaultCanvas0").style.height = `${windowHeight}px`;
+  document.getElementById("defaultCanvas0").style.height = `${windowWidth * 9 / 16}px`;
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("defaultCanvas0").style.width  = `${windowWidth}px`;
+  document.getElementById("defaultCanvas0").style.height = `${windowWidth * 9 / 16}px`;
   if (!debug && getCookie(FULLSCREEN_KEY) !== 'true'){
     setTimeout(() => {
       createCookie(FULLSCREEN_KEY, true, 1);
-      alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")
+      alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.");
     }, 100);
   }
 });
