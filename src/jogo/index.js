@@ -116,6 +116,13 @@ const OPERACOES = [
   "/",
 ];
 
+const TECLAS = {
+  W: 87,
+  S: 83,
+  A: 65,
+  D: 68,
+}
+
 const MIN_FLOAT_FOR_MINIGAME = -50;
 const MAX_FLOAT_FOR_MINIGAME = 50;
 
@@ -999,9 +1006,10 @@ const Jogo = {
     if (usingTheorem) {
       return;
     }
+    console.log(keyCode);
     switch (keyCode) {
       case UP_ARROW:
-      case W:
+      case TECLAS.W:
         if (!showChallenge) {
           if (currentPosition.y > 0) {
             handleMovementAttempt(DIRECTIONS.UP);
@@ -1009,7 +1017,7 @@ const Jogo = {
         }
         break;
       case DOWN_ARROW:
-      case S:
+      case TECLAS.S:
         if (!showChallenge) {
           if (currentPosition.y < matrixSize - 1) {
             handleMovementAttempt(DIRECTIONS.DOWN);
@@ -1017,7 +1025,7 @@ const Jogo = {
         }
         break;
       case LEFT_ARROW:
-      case A:
+      case TECLAS.A:
         if (!showChallenge) {
           if (currentPosition.x > 0) {
             handleMovementAttempt(DIRECTIONS.LEFT);
@@ -1025,7 +1033,7 @@ const Jogo = {
         }
         break;
       case RIGHT_ARROW:
-      case D:
+      case TECLAS.D:
         if (!showChallenge) {
           if (currentPosition.x < matrixSize - 1) {
             handleMovementAttempt(DIRECTIONS.RIGHT);
