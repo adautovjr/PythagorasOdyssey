@@ -17,6 +17,7 @@ var canvas;
 var telaAtual = TELAS.MENU;
 var justClicked = false;
 var isHoveringButton = false;
+const FULLSCREEN_KEY = "@PYTHAGORAS_ODYSSEY:fullscreen";
 
 //Declaração de variáveis globais de imagens
 var imgFundoMenu, imgFundoJogo, imgCreditos, imgComoJogar, imgPlayer, imgHollow, 
@@ -256,9 +257,29 @@ function mousePressed() {
   }
 }
 
+function createCookie(cookieName,cookieValue,daysToExpire){
+  var date = new Date();
+  date.setTime(date.getTime()+(daysToExpire*60*1000));
+  document.cookie = cookieName + "=" + cookieValue + ";path=/; expires=" + date.toGMTString();
+}
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+function deleteCookie(name) {
+  document.cookie = name+'=; path=/; Max-Age=-99999999;';
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-  if (!debug){
+  if (!debug && !getCookie(FULLSCREEN_KEY)){
     setTimeout(() => {
+      createCookie(FULLSCREEN_KEY, true, 1);
       alert("Esse jogo será melhor experienciado em tela cheia. Aperte F11 para abrir em tela cheia.")
     }, 100);
   }

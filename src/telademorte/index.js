@@ -1,4 +1,4 @@
-const DEATH_SENTENCE = 'Pitágoras falhou miseralmente';
+const DEATH_SENTENCE = 'Pitágoras falhou miseravelmente';
 let scoreText = "Sua pontuação: ";
 let highscoreText = "Melhor pontuação: ";
 const TelaDeMorte = {

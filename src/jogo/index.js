@@ -831,7 +831,7 @@ function drawHUD(){
     );
   }
   if (player.score > 0) {
-    let scoreText = `Movimentos : ${player.score}`;
+    let scoreText = `Movimentos: ${player.score}`;
     textSize(40)
     text(
       scoreText,
@@ -1001,6 +1001,7 @@ const Jogo = {
     }
     switch (keyCode) {
       case UP_ARROW:
+      case W:
         if (!showChallenge) {
           if (currentPosition.y > 0) {
             handleMovementAttempt(DIRECTIONS.UP);
@@ -1008,6 +1009,7 @@ const Jogo = {
         }
         break;
       case DOWN_ARROW:
+      case S:
         if (!showChallenge) {
           if (currentPosition.y < matrixSize - 1) {
             handleMovementAttempt(DIRECTIONS.DOWN);
@@ -1015,6 +1017,7 @@ const Jogo = {
         }
         break;
       case LEFT_ARROW:
+      case A:
         if (!showChallenge) {
           if (currentPosition.x > 0) {
             handleMovementAttempt(DIRECTIONS.LEFT);
@@ -1022,6 +1025,7 @@ const Jogo = {
         }
         break;
       case RIGHT_ARROW:
+      case D:
         if (!showChallenge) {
           if (currentPosition.x < matrixSize - 1) {
             handleMovementAttempt(DIRECTIONS.RIGHT);
