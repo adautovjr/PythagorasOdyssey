@@ -30,6 +30,11 @@ const initialValues = function () {
         cardHeight: 170,
         padding: 20,
         gameObject: {
+          cardAdjustment: {
+            x: -25,
+            y: -12,
+            size: 0.4
+          },
           imgAdjustment: {
             x: 4,
             y: 16,
@@ -45,6 +50,11 @@ const initialValues = function () {
         cardHeight: 150,
         padding: 10,
         gameObject: {
+          cardAdjustment: {
+            x: -25,
+            y: -12,
+            size: 0.4
+          },
           imgAdjustment: {
             x: 6,
             y: 16,
@@ -60,6 +70,11 @@ const initialValues = function () {
         cardHeight: 120,
         padding: 10,
         gameObject: {
+          cardAdjustment: {
+            x: -25,
+            y: -12,
+            size: 0.4
+          },
           imgAdjustment: {
             x: 0,
             y: 10,
@@ -75,6 +90,11 @@ const initialValues = function () {
         cardHeight: 120,
         padding: 10,
         gameObject: {
+          cardAdjustment: {
+            x: -25,
+            y: -12,
+            size: 0.4
+          },
           imgAdjustment: {
             x: 10,
             y: 20,
@@ -858,7 +878,7 @@ function drawHUD(){
 
 function drawLines() {
   push();
-  stroke('#3d0055');
+  stroke(ROXO);
   strokeWeight(10);
   if (usingTheorem === true) {
     // draw the lines between the points
@@ -882,8 +902,18 @@ function drawTooltips() {
   if (!showTooltip) {
     return
   }
-  rect(mouseX, mouseY, 100, 100)
-  text(showTooltip, mouseX, mouseY)
+  let x = mouseX + 20;
+  let y = mouseY + 30;
+  push()
+  strokeWeight(3)
+  stroke(ROXO)
+  rect(x, y, 300, 100)
+  pop()
+
+  push()
+  fill(ROXO)
+  text(showTooltip, x + 5, y + 5, 295)
+  pop()
 }
 
 function getClickedCard(){

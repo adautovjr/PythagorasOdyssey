@@ -38,6 +38,7 @@ const FORMAS = {
 //Declaração de variáveis globais de imagens
 var assets = {};
 const largCanvas = 1920, altCanvas = largCanvas * 9 / 16;
+const ROXO = '#3d0055';
 
 // Definições dos botões do menu principal
 var largBtnMenu = 300, altBtnMenu = 40,
@@ -67,7 +68,7 @@ function funcBtnCreditos() {
 
 function desenhaBotao(x, y, texto, func, foco, fillColor = false, tooltip = false) {
   push()
-  stroke('#3d0055')
+  stroke(ROXO)
   strokeWeight(3)
   if (focoBtnMenu == foco) {
     fill(fillColor ? fillColor : '#ffffff'); //Pinta o foco do botão
@@ -156,7 +157,8 @@ function preload() {
 
 function setup() {
   createCanvas(largCanvas, altCanvas);
-  //   vdFundoInicial.loop();
+  $("#defaultCanvas0").css({ 'width': `${largCanvas}px` });
+  $("#defaultCanvas0").css({ 'height': `${altCanvas}px` });
 }
 
 function draw() {
