@@ -13,11 +13,32 @@ const MENU_OPTIONS = {
 
 var canvas;
 
-//Declaração de variáveis globais gerais
-var telaAtual = TELAS.JOGO;
-var justClicked = false, isHoveringButton = false, showTooltip = false;
+// Declaração de variáveis globais gerais
+var telaAtual = debug ? TELAS.JOGO : TELAS.MENU;
+var justClicked = false, isHoveringButton = false, showTooltip = false, lastBtnHovered = true;
 const FULLSCREEN_KEY = "@PYTHAGORAS_ODYSSEY:fullscreen";
 const IMAGES_KEY = "@PYTHAGORAS_ODYSSEY:assets";
+const SETTINGS_KEY = "@PYTHAGORAS_ODYSSEY:settings";
+
+let playerSettings = {
+  music: {
+    amp: 0.0625
+  },
+  sound: {
+    amp: 0.125
+  }
+}
+
+const SOUND_EFFECTS = {
+  BACKGROUND_MUSIC: "backgroundMusic",
+  BTN_HOVER: "btnHover",
+  CONFIRMATION: "confirmation",
+  CORRECT_ANSWER: "correctAnswer",
+  WRONG_ANSWER: "wrongAnswer",
+  MOVE_SOUND: "moveSound",
+  GAME_OVER: "gameOver",
+  LASER: "laser"
+}
 
 const FORMAS = {
   "cilindro": "Cilíndro",
@@ -81,6 +102,12 @@ function desenhaBotao(x, y, texto, func, foco, fillColor = false, tooltip = fals
     mouseY >= y &&
     mouseY <= y + altBtnMenu
   ) {
+    if (lastBtnHovered && texto != lastBtnHovered) {
+      lastBtnHovered = texto;
+      if (!assets.btnHover.isPlaying()){
+        assets.btnHover.play();
+      }
+    }
     isHoveringButton = true;
     cursor("pointer");
     focoBtnMenu = foco;
@@ -90,14 +117,15 @@ function desenhaBotao(x, y, texto, func, foco, fillColor = false, tooltip = fals
     if (!justClicked && mouseIsPressed && mouseButton == LEFT) {
       justClicked = true;
       //Se o mouse estiver pressionado
+      handleSoundEffect(SOUND_EFFECTS.CONFIRMATION);
       func();
       setTimeout(function(){
         justClicked = false;
-      }, 3000);
+      }, 1000);
     }
   } else if (!isHoveringButton) {
     cursor(CROSS);
-    showTooltip = false;
+    showTooltip = false; 
   }
   rectMode(CORNER)
   rect(x, y, largBtnMenu, altBtnMenu);
@@ -131,19 +159,38 @@ function imagem(img, x, y, escala) {
 }
 
 function preload() {
+  soundFormats('mp3', 'ogg');
   if (!localStorage.getItem(IMAGES_KEY)) {
+    
+    // Imgs
     assets["imgFundoMenu"] = loadImage('assets/background-menu.png');
     assets["imgFundoJogo"] = loadImage('assets/background.png');
     assets["imgComoJogar"] = loadImage('assets/comojogar.png');
     assets["imgCreditos"] = loadImage('assets/creditos.png');
     assets["imgPlayer"] = loadImage('assets/player.png');
     assets["imgHollow"] = loadImage('assets/hollowzin.png');
+    assets["imgChest"] = loadImage('assets/bauzinho.png');
+    assets["imgHeal"] = loadImage('assets/heal.png');
+    assets["imgPotion"] = loadImage('assets/potion.png');
+    assets["imgTheorem"] = loadImage('assets/teorema.png');
     assets["cardPlayer"] = loadImage('assets/card-player.png');
     assets["cardHollow"] = loadImage('assets/card-hollows.png');
     assets["cardItem"] = loadImage('assets/card-itens.png');
     assets["cardChest"] = loadImage('assets/card-bau.png');
     assets["heartHealthy"] = loadImage('assets/coracao-player.png');
     assets["heartHollow"] = loadImage('assets/coracao-hollow.png');
+    
+    // Audio
+    assets[SOUND_EFFECTS.BACKGROUND_MUSIC] = loadSound('assets/audio/groovySaturday.ogg');
+    assets[SOUND_EFFECTS.BTN_HOVER] = loadSound('assets/audio/btnHover.ogg');
+    assets[SOUND_EFFECTS.CONFIRMATION] = loadSound('assets/audio/confirmation.ogg');
+    assets[SOUND_EFFECTS.LASER] = loadSound('assets/audio/laser.ogg');
+    assets[SOUND_EFFECTS.CORRECT_ANSWER] = loadSound('assets/audio/correctAnswer.ogg');
+    assets[SOUND_EFFECTS.WRONG_ANSWER] = loadSound('assets/audio/wrongAnswer.ogg');
+    assets[SOUND_EFFECTS.MOVE_SOUND] = loadSound('assets/audio/move.ogg');
+    assets[SOUND_EFFECTS.GAME_OVER] = loadSound('assets/audio/gameOver.ogg');
+    
+    // Formas
     assets["imgFormas"] = [];
     for (let i = 0; i < Object.keys(FORMAS).length; i++) {
       const forma = Object.keys(FORMAS)[i];
@@ -155,11 +202,46 @@ function preload() {
   }
 }
 
+function handleSoundEffect(tag) {
+  switch (tag) {
+    case SOUND_EFFECTS.BACKGROUND_MUSIC:
+      if (!assets[tag].isLooping()) {
+        assets[tag].loop(0, 1, playerSettings.music.amp);
+      } else {
+        assets[tag].stop();
+      }
+      break;
+    case SOUND_EFFECTS.GAME_OVER:
+      assets[tag].play(0, 1, playerSettings.music.amp);
+      break;
+    default:
+      assets[tag].play(0, 1, playerSettings.sound.amp);
+      break;
+  }
+}
+
+function loadSettings() {
+  let savedSettings = localStorage.getItem(SETTINGS_KEY);
+  if (savedSettings) {
+    playerSettings = JSON.parse(savedSettings);
+  }
+}
+
+function saveSettings(obj = {}) {
+  playerSettings = {
+    ...playerSettings,
+    ...obj
+  }
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(playerSettings));
+}
+
 function setup() {
+  loadSettings();
   createCanvas(largCanvas, altCanvas);
   setTimeout(() => {
-    window.dispatchEvent(new Event('resize'))
-  }, 100);
+    window.dispatchEvent(new Event('resize'));
+    handleSoundEffect(SOUND_EFFECTS.BACKGROUND_MUSIC);
+  }, 10);
 }
 
 function draw() {

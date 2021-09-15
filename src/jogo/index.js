@@ -299,16 +299,24 @@ function drawCard(gameObject, x, y) {
       text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
       break;
     case GAME_OBJECT_TYPES.HEAL:
+      imagem(assets.cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.imgHeal, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
+      imagem(assets.heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
+      break;
     case GAME_OBJECT_TYPES.POTION:
       imagem(assets.cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
-      text(gameObject.type, x + 70, y + 90)
+      imagem(assets.imgPotion, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
       imagem(assets.heartHealthy, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
       text(gameObject.HP, x + 160 - (textWidth(gameObject.HP) / 2), y + 18)
       break;
     case GAME_OBJECT_TYPES.THEOREM:
+      imagem(assets.cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.imgTheorem, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
+      break;
     case GAME_OBJECT_TYPES.CHEST:
-      imagem(assets.cardChest, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
-      text(gameObject.type, x + 70, y + 90)
+      imagem(assets.cardItem, x + cardAdjustment.x, y + cardAdjustment.y, cardAdjustment.size)
+      imagem(assets.imgChest, x + imgAdjustment.x, y + imgAdjustment.y, imgAdjustment.size)
       break;
   }
 }
@@ -474,6 +482,7 @@ function move(direction) {
       console.error(`Weird direction ${direction}`);
       break;
   }
+  assets.moveSound.play();
 }
 
 function handleInteraction(target) {
@@ -821,7 +830,13 @@ function handleAnswer(id) {
     return;
   }
   showAnswer = true;
-  handleReward(answersArray[id] == minigameInfo.answer.right ? spawnReward() : {});
+  if (answersArray[id] == minigameInfo.answer.right){
+    handleReward(spawnReward());
+    handleSoundEffect(SOUND_EFFECTS.CORRECT_ANSWER);
+  } else {
+    handleReward({});
+    handleSoundEffect(SOUND_EFFECTS.WRONG_ANSWER)
+  }
 
   setTimeout(function(){
     showChallenge = false;
@@ -907,11 +922,14 @@ function drawTooltips() {
   push()
   strokeWeight(3)
   stroke(ROXO)
+  rectMode(CORNER)
   rect(x, y, 300, 100)
   pop()
 
   push()
   fill(ROXO)
+  textSize(24)
+  rectMode(CORNER)
   text(showTooltip, x + 5, y + 5, 295)
   pop()
 }
@@ -937,6 +955,8 @@ function swapCards(cards){
     currentState[cards[0].position.i][cards[0].position.j] = cards[2];
     setTimeout(()=> {
       resolve();
+      handleSoundEffect(SOUND_EFFECTS.MOVE_SOUND);
+      player.score++;
     }, 50);
   })
 }
@@ -987,11 +1007,14 @@ function handleMovementAttempt(direction){
     updatePlayerPosition();
     console.log(currentPosition);
   } else {
+    // MORREU
     if (player.score > player.highscore) {
       player.highscore = player.score;
       localStorage.setItem(HIGHSCORE_KEY, player.score);
     }
-    telaAtual = TELAS.TELADEMORTE
+    telaAtual = TELAS.TELADEMORTE;
+    handleSoundEffect(SOUND_EFFECTS.BACKGROUND_MUSIC);
+    handleSoundEffect(SOUND_EFFECTS.GAME_OVER);
   }
 }
 
@@ -1007,6 +1030,7 @@ const Jogo = {
     if (usingTheorem === true && theoremPoints.length < 3) {
       let selectedCard = getClickedCard();
       if (selectedCard !== undefined && !Object.keys(selectedGameObjects).includes(selectedCard.id)) {
+        handleSoundEffect(SOUND_EFFECTS.LASER);
         selectedGameObjects[selectedCard.id] = selectedCard;
         theoremPoints.push([mouseX, mouseY])
         if(Object.keys(selectedGameObjects).length == 3){
@@ -1049,10 +1073,9 @@ const Jogo = {
     }
   },
   handleInput() {
-    if (usingTheorem) {
+    if (usingTheorem && keyCode !== ESCAPE) {
       return;
     }
-    console.log(keyCode);
     switch (keyCode) {
       case UP_ARROW:
       case TECLAS.W:
@@ -1087,10 +1110,15 @@ const Jogo = {
         }
         break;
       case ESCAPE:
-        if (!showChallenge) {
+        if (!showChallenge && !usingTheorem) {
           telaAtual = TELAS.MENU;
-        } else {
+        } else if (showChallenge) {
           showChallenge = false;
+        } else if (usingTheorem) {
+          usingTheorem = false;
+          selectedGameObjects = [];
+          theoremPoints = [];
+          player.theorems++;
         }
         break;
       default:
